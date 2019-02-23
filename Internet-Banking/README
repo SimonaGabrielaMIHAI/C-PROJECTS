@@ -1,0 +1,41 @@
+//~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//	MIHAI SIMONA-GABRIELA   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+*Sistem bancar*
+Se citeste din fisier o baza de date si se efectueaza operatiuni bancare
+prin conexiune client-server. Comenzile se scriu in logfile.
+Comenzi consola client:
+>login #nr card# #pin#
+>logout
+>listsold
+>transfer #nr card# #suma#
+>unlock 
+>quit
+Comenzi consola server:
+>quit
+
+/Implementare/
+Baza de date este stocata printr-un vector de tip structura:
+*am stocat pinul si numarul cardului in variabile long;
+*am adaugat variabile care sunt utile in implementare, inclusiv socketul
+cu care este conectat clientul;
+
+=>Client
+#Foloseste multiplexare pentru a comunica in paralel atat cu STDIN, cat si cu 
+server-ul, in cazul in care acesta primeste comanda de quit(toti clientii sunt
+de asemenea deconectati)
+#Citeste comenzile de la tastatura(daca nu au numarul sau forma corecta crapa tot)
+#Mi-am definit o noua comanda CONFIRM pentru efectuarea transferului de bani.
+->Comanda se "compune" in client si se transmite serverului cand se primeste
+comanda de confirmare. Astfel, serverul nu este blocat la asteptarea comenzii.
+#Se afiseaza la consola numele fisierului pentru clientul pornit.
+#Comenzile sunt afisate cu spatii la consola si fara in fisierul log.
+#Trimite mesaj de logout in caz de quit pentru cazul in care se da quit cu un
+client conectat. Logout reactioneaza ok chiar daca nu este conectat un client.
+
+=>Server
+#De la tastatura primeste doar comanda quit, restul venind de la client prin
+UDP sau TCP.
+#Afiseaza la consola mesaje relevante pentru conexiune, mesajele primite
+de la clienti.
