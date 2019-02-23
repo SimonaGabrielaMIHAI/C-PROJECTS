@@ -1,0 +1,57 @@
+//~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//	MIHAI SIMONA-GABRIELA   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+*Redimensionarea imaginii folosind tehnica SSAA*
+================MULTITHREADING================
+
+art.pgm este capodopera obtinuta in procesul de debugging.
+
+Rulare: argumentele: inputImage outputImage resizeFactor nrThreads
+
+/Implementare/
+~~homework.h~~
+#Structura image contine tot ce se citeste din antet si o matrice 
+cu elemente de tip void(care vor fi RGB sau char).
+#Structura pixel pastreaza informatia pentru imaginile color ce contin
+3 char-uri(RGB).
+#am folosit char iar la calcule fac un cast la unsigned.
+
+~~homework.c~~
+//readInput//
+#citeste antetul imaginii si initializeaza matricea in functie de tipul ei.
+#in imagine se pastreaza de tip void, si in functie de caz folosesc cast la
+tipul real al matricii(declar un alt pointer de tipul respectiv si lucrez cu el).
+#pentru matricea color citesc toate valorile RGB cu un singur fread folosind
+dimensiunea structurii special definita pentru pixel(cate 3 char-uri).
+
+//functiile de init//
+#initializeaza matrici cu dimensiunile date ca parametrii si returneaza pointer.
+
+//writeData//
+#scrie in fisier in functie de tipul imaginii si elibereaza memoria.
+
+//resize//
+#seteaza campurile din matricea de out si porneste threaduri care se ocupa
+de prelucrare. Am definit global pointeri la imaginea de in si la cea de out
+care se seteaza dupa ce se initializeaza/aloca si imaginea de out.
+#paralelizarea am facut-o in toate cazurile pe for-ul exterior.
+#in threaduri am parcurs matricea mai mica pentru care am luat bucatile din 
+matricea initiala corespunzatoare. 
+(for-urile exterioare sunt pe matricea redimensionata)
+
+//threadColorEven//
+#pentru fiecare pixel din matricea mica se initializeaza sumele cu 0, apoi se
+parcurge matricea de dimensiune resize_factor si se aduna elementele.
+#la fiecare pixel setat se sar resize_factor elemente pe linii, respectiv 
+pe coloane (se sare matricea prelucrata anterior sau aferenta altui thread de executie),
+si se tine cont sa nu se treaca peste dimensiunea matricii mari.
+
+//threadColorOdd//
+#singura diferenta aici este ca se mai inmultesc elementele cu corespondentul din
+matricea Gauss inainte de a se aduna la suma si se iau matrici de doar 3 elemente.
+--a fost foarte fain sa implementez inmultirea de matrici pana sa descopar adevarata solutie
+de inmultire element cu element--
+
+//threadBWEven//        *Ca mai sus dar cu o singura suma*
+//threadBWOdd//
