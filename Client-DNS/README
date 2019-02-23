@@ -1,0 +1,45 @@
+//~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//	MIHAI SIMONA-GABRIELA   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+*Client DNS*
+Se pot efectua interogari DNS pe serverele definite in fisierul conf.
+Clientul efectueaza interogari:
+>A = Host Address
+>MX = Mail Exchange
+>NS = Authoritative Name Server
+>CNAME = the canonical name for an alias
+>SOA = Start Of a zone of Authority
+>TXT = Text strings
+
+Rulare: se dau ca argumente un nume de domeniu si tipul interogarii.
+
+/Implementare/
+->Am ales sa implementez transferul de fisiere cu server-ul
+DNS prin protocol UDP.
+-> Structurile si variabilele declarate global se gasesc in
+fisierul resource.h. Functiile folosite in program se gasesc
+in fisierul dnsclient.c.
+->Numarul maxim de raspunsuri este setat pe 10. 
+->Folosesc structura timeval pentru a seta timpul de timeout 
+pe server. Este setat pe 10 secunde. Select-ul va astepta
+un raspuns, si se iese cu 0 in caz de timeout.
+
+=> Formez mesajele ce trebuie transmise prin UDP inainte sa 
+citesc date din fisierul conf.
+=> Se aloca memorie pentru mesajul care trebuie trimis, apoi
+se compune pe componente(cu pointeri la dimensiunile potrivite)
+=> Mesajele se prelucreaza in functie de tipul de raspuns.
+=> Codul este acelasi pentru diferitele sectiuni de raspuns.
+
+Functia de conversie ~> compressionReverse
+-> Primeste "indexul" de la care incepe mesajul din intregul
+raspuns al serverului, pointer-ul de start al mesajului, 
+dimensiunea peste care trebuia sa sara aferenta numelui ca sa 
+ajunga la urmatoarea parte a mesajului(valoare de return)
+si string-ul cu numele(alocat in main).
+->Se trateaza cazul de pointer sau nu, in caz de pointer se sare
+la adresa din mesaj indicata, daca nu este pointer se copiaza in
+rezultat. Numele obtinut se prelucreaza apoi pentru a avea forma 
+corecta, fara numere, cu '.'
+
