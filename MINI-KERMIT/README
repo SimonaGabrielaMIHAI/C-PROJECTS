@@ -1,0 +1,44 @@
+//~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//	MIHAI SIMONA-GABRIELA   //
+//~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+*Protocolul KERMIT pentru transfer de fisiere, in format redus*
+
+Protocolul presupune retransmisia pachetelor eronate sau neconfirmate.
+Datele sunt impachetate, avand campuri de control.
+
+/Implementare/
+->Programul poate rula si pe mai multe fisiere de input date la rulare.
+(se iau argumentele din command line)
+
+-> String-urile trimise pentru calcularea CRC se trimit si cu '\0'.
+- copiez mereu tot ce trebuie sa trimit in functia respectiva, in 
+myPayload
+
+In lib.h/lib.c
+#Am folosit ENUM pentru tipurile pachetelor.
+- tipul 'E' nu este folosit
+- era definit ca posibil tip, asa ca l-am pastrat
+#Am folosit o functie de incrementare a secventei pentru a pastra
+conditia de modulo 64, plus o functie de intToChar cam inutila, dar
+nu am stiut tipul exact in care sa fac conversia initial (signed/unsigned) si
+daca imi afecteaza codul. *si se vede mai bine din ce se face conversia (^-^)*
+-incrementarea se face cu 2, sender-ul si receiver-ul pastrand secvente separate
+-totusi corespondenta secventelor este verificata cu afisarea secventei primite in
+pachet
+
+->Am folosit memcpy pentru a gestiona transferul de bytes in memorie.
+
+**SENDER**
+->Functia waitMessageAndResend se ocupa de retrimitere la timeout.
+-doar retrimite vechiul mesaj in cazul in care primeste null
+->Bucla do while se ocupa de retrimitere in caz de raspuns NAK.
+-se recalculeaza crc cu noua secventa
+
+**RECEIVER**
+->Mesajul de tip send-init este tratat separat, avand un raspuns putin
+mai complex.
+->Toate celelalte tipuri de mesaje sunt tratate intr-un singur loop, care
+se termina la primirea EOT.
+
+Comentariile sunt mult mai sugestive in cod.
